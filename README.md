@@ -1,2 +1,2 @@
 # vra-Templates
-storage of vRA yaml
+Used for VM and vRO Deployments
