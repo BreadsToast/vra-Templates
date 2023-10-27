@@ -1,0 +1,81 @@
+name: Ubuntu on NSX and AD Account Create
+version: 1
+formatVersion: 1
+inputs:
+  accountName:
+    type: string
+    title: User Name
+  displayName:
+    type: string
+    title: Display Name
+  password:
+    type: string
+    title: Password
+    encrypted: true
+  confirmPass:
+    type: string
+    title: Confirm Password
+    encrypted: true
+    default: null
+  ouContainer:
+    type: object
+    title: AD OU container
+    $data: vro/data/inventory/AD:OrganizationalUnit
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+  flavor:
+    type: string
+    title: Flavor Size
+    default: Medium
+    enum:
+      - Small
+      - Medium
+      - Large
+  network:
+    type: string
+    title: Network Tag
+    default: linux-seg-vmw
+    enum:
+      - default-seg
+      - linux-seg-vmw
+      - linux-seg-deg
+      - vra-seg-1
+resources:
+  Custom_Custom_1:
+    type: Custom.Custom
+    properties:
+      accountName: ${input.accountName}
+      displayName: ${input.displayName}
+      ouContainer: ${input.ouContainer}
+      password: ${input.password}
+      confirmPassword: ${input.confirmPass}
+      domainName: VMW
+  Cloud_vSphere_Machine_1:
+    type: Cloud.vSphere.Machine
+    properties:
+      image: ubuntu-02
+      flavor: ${input.flavor}
+      customizationSpec: ubuntu-custom-1
+      networks:
+        - network: ${resource.Cloud_NSX_Network_1.id}
+      cloudConfig: |
+        #cloud-config
+        user:
+          -default
+          -name: ${input.accountName}
+          shell '/bin/bash'
+          sudo: 'ALL=(ALL) NOPASSWD:ALL'
+        ssh_pwauth: True
+        chpassword:
+          list: |
+            ${input.accountName}:${input.password}
+          expire: False
+  Cloud_NSX_Network_1:
+    type: Cloud.NSX.Network
+    properties:
+      networkType: existing
+      constraints:
+        - tag: ${input.network}
