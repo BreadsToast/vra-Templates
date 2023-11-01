@@ -1,5 +1,5 @@
 name: Ubuntu w/NSX
-version: 8
+version: 10
 formatVersion: 1
 inputs:
   accountName:
@@ -47,6 +47,7 @@ resources:
         #cloud-config
         perserve_hostname: true
         set_hostname: ${self.resourceName}
+        fdqn: ${self.resourceName+".vmw-sddc.lab"}
         user:
           -default
           -name: ${input.accountName}
@@ -57,6 +58,9 @@ resources:
           list: |
             ${input.accountName}:${input.password}
           expire: False
+
+        runcmd:
+          -eject
   Cloud_NSX_Network_1:
     type: Cloud.NSX.Network
     properties:
