@@ -1,5 +1,5 @@
 name: Ubuntu w/NSX
-version: 5
+version: 6
 formatVersion: 1
 inputs:
   accountName:
