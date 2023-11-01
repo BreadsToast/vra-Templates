@@ -40,7 +40,6 @@ resources:
       image: ubuntu-02
       flavor: ${input.flavor}
       count: ${input.count}
-      customizationSpec: ubuntu-custom-1
       networks:
         - network: ${resource.Cloud_NSX_Network_1.id}
           securityGroups: []
