@@ -1,5 +1,5 @@
 name: Ubuntu w/NSX
-version: 7
+version: 8
 formatVersion: 1
 inputs:
   accountName:
@@ -46,7 +46,7 @@ resources:
       cloudConfig: |
         #cloud-config
         perserve_hostname: true
-        set_hostname: self.resourceName
+        set_hostname: ${self.resourceName}
         user:
           -default
           -name: ${input.accountName}
