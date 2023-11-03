@@ -1,5 +1,5 @@
 name: Ubuntu w/NSX
-version: 10
+version: 1.1
 formatVersion: 1
 inputs:
   accountName:
@@ -14,12 +14,11 @@ inputs:
   network:
     type: string
     title: Network Tag
-    default: linux-seg-vmw
+    default: default-seg
     enum:
       - default-seg
       - linux-seg-vmw
       - linux-seg-dev
-      - vra-seg-1
   count:
     type: number
     title: Count
