@@ -1,5 +1,5 @@
 name: Ubuntu w/NSX
-version: 1.1
+version: 1.2
 formatVersion: 1
 inputs:
   accountName:
@@ -41,25 +41,7 @@ resources:
       count: ${input.count}
       networks:
         - network: ${resource.Cloud_NSX_Network_1.id}
-          securityGroups: []
-      cloudConfig: |
-        #cloud-config
-        perserve_hostname: true
-        set_hostname: ${self.resourceName}
-        fdqn: ${self.resourceName+".vmw-sddc.lab"}
-        user:
-          -default
-          -name: ${input.accountName}
-          shell: '/bin/bash'
-          sudo: 'ALL=(ALL) NOPASSWD:ALL'
-        ssh_pwauth: True
-        chpassword:
-          list: |
-            ${input.accountName}:${input.password}
-          expire: False
-
-        runcmd:
-          -eject
+      customizationSpec: ubuntu-custom-1
   Cloud_NSX_Network_1:
     type: Cloud.NSX.Network
     properties:
