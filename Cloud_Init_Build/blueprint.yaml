@@ -1,4 +1,4 @@
-name: Ubuntu w/NSX
+name: Cloud-Init Ubuntu
 version: 1.1
 formatVersion: 1
 inputs:
