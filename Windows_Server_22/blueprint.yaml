@@ -1,5 +1,5 @@
-name: Cloud_Init_Build
-version: 1.2
+name: Windows_Server_22
+version: 1.0
 formatVersion: 1
 inputs:
   password:
