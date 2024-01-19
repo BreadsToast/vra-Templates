@@ -1,5 +1,5 @@
-name: Cloud-Init Ubuntu
-version: 1.1
+name: Cloud_Init_Build
+version: 1.2
 formatVersion: 1
 inputs:
   accountName:
@@ -39,10 +39,19 @@ resources:
       image: passthrough-test
       flavor: ${input.flavor}
       count: ${input.count}
+      tags:
+        - key: CreatedBy
+          value: ${env.requestedBy}
+        - key: CreatedOn
+          value: ${env.requestedAt}
+        - key: Deployment
+          value: ${env.deploymentName}
       networks:
         - network: ${resource.Cloud_NSX_Network_1.id}
       cloudConfig: |
         #cloud-config
+        set_hostname: ${self.resourceName}
+        fqdn: ${(self.resourceName)+".pso.vmw-sddc.lab"}
         users:
         - default
         - name: ${input.accountName}
