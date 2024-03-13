@@ -1,0 +1,80 @@
+name: Windows_Server_19
+version: 1.0
+formatVersion: 1
+inputs:
+  hostname:
+    type: string
+    title: User Defined Hostname
+    description: Hostname section of project-hostname-w/t###. Min 4, Max 10 characters
+    minLength: 4
+    maxLength: 10
+    pattern: '[a-zA-Z0-9!@#$%^&*]'
+  password:
+    type: string
+    title: Administrator Password
+    readOnly: false
+    encrypted: true
+    default: null
+  network:
+    type: string
+    title: Network Tag
+    default: Public
+    enum:
+      - Public
+      - Private
+  flavor:
+    type: string
+    title: Flavor Size
+    default: Medium
+    enum:
+      - Small
+      - Medium
+      - Large
+  diskSize:
+    type: number
+    title: Disk Size in GB
+  image:
+    type: string
+    title: Image
+    default: windows-2019
+    enum:
+      - windows-2019
+      - windows-2022
+resources:
+  Cloud_vSphere_Disk_1:
+    type: Cloud.vSphere.Disk
+    properties:
+      capacityGb: ${input.diskSize}
+  Cloud_vSphere_Machine_1:
+    type: Cloud.vSphere.Machine
+    properties:
+      constraints:
+        - tag: Resource:Dev_Pool
+      name: ${input.hostname}
+      remoteAccess:
+        authentication: usernamePassword
+        username: Administrator
+        password: ${input.password}
+      image: ${input.image}
+      flavor: ${input.flavor}
+      tags:
+        - key: CreatedBy
+          value: ${env.requestedBy}
+        - key: CreatedOn
+          value: ${env.requestedAt}
+        - key: Deployment
+          value: ${env.deploymentName}
+      networks:
+        - network: ${resource.Cloud_NSX_Network_1.id}
+      cloudConfig: |
+        #cloud-config
+        set_hostname: ${self.resourceName}
+        write_files:
+           content: Cloudbase-init test
+           path: C:\test.txt
+  Cloud_NSX_Network_1:
+    type: Cloud.NSX.Network
+    properties:
+      networkType: existing
+      constraints:
+        - tag: ${env.projectName}:${input.network}
