@@ -1,0 +1,66 @@
+name: NSX Segment and OU Create
+version: 2
+formatVersion: 1
+inputs:
+  cidr:
+    type: string
+    title: Private Network CIDR
+    description: Must be inside 192.168.0.0/16
+    default: 192.168.0.0/27
+  cidr2:
+    type: string
+    title: Public Network CIDR
+    description: Must be inside 192.168.0.0/16
+    default: 192.168.0.0/27
+  name2:
+    type: string
+    title: Public Network Name
+  name:
+    type: string
+    title: Private Network Name
+  host:
+    type: object
+    title: Host
+    properties:
+      id:
+        type: string
+        title: Reference object identifier
+      type:
+        type: string
+        title: Reference object type
+    $data: vro/data/inventory/VRA:Host
+  proj_name:
+    type: string
+    title: Project Name
+resources:
+  Cloud_NSX_Gateway_1:
+    type: Cloud.NSX.Gateway
+    properties:
+      name: ${input.proj_name}
+      resourceName: ${input.proj_name}
+      networks:
+        - ${resource.Cloud_NSX_Network_2.id}
+  Cloud_NSX_Network_2:
+    type: Cloud.NSX.Network
+    properties:
+      networkType: routed
+      networkCidr: 192.168.30.0/27
+      name: ${input.name2}
+      resourceName: ${input.name2}
+      tags:
+        - key: ${input:proj_name}:${input.name2}
+  Cloud_NSX_Network_1:
+    type: Cloud.NSX.Network
+    properties:
+      networkType: private
+      networkCidr: ${input.cidr2}
+      name: ${input.name}
+      resourceName: ${input.name}
+      tags:
+        - key: ${input:proj_name}:${input.name}
+  Custom_Project_Create_1:
+    type: Custom.Project_Create
+    properties:
+      host: ${input.host}
+      name: ${input.proj_name}
+      placementPolicy: DEFAULT
