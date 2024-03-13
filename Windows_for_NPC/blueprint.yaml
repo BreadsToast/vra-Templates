@@ -1,5 +1,5 @@
-name: Windows_Server_19
-version: 1.0
+name: Windows_for_NPC
+version: 1.1
 formatVersion: 1
 inputs:
   hostname:
