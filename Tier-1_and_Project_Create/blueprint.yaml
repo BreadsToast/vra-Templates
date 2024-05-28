@@ -1,6 +1,12 @@
 name: Tier-1_and_Project_Create
 version: 3
 formatVersion: 1
+Custom_Project_Create_1:
+  type: Custom.Project_Create_1
+  properties:
+    host: ${input.host}
+    name: ${input.proj_name}
+    placementPolicy: DEFAULT
 inputs:
   cidr:
     type: string
@@ -12,12 +18,12 @@ inputs:
     title: Public Network CIDR
     description: Must be inside 192.168.0.0/16
     default: 192.168.0.0/27
-  name2:
-    type: string
-    title: Public Network Name
   name:
     type: string
     title: Private Network Name
+  name2:
+    type: string
+    title: Public Network Name
   host:
     type: object
     title: Host
@@ -40,26 +46,29 @@ resources:
       resourceName: ${input.proj_name}
       networks:
         - ${resource.Cloud_NSX_Network_2.id}
+        - ${resource.Cloud_NSX_Network_1.id}
   Cloud_NSX_Network_2:
     type: Cloud.NSX.Network
     properties:
       networkType: routed
-      networkCidr: 192.168.30.0/27
+      networkCidr: ${input.cidr2}
       name: ${input.name2}
       resourceName: ${input.name2}
       tags:
-        - key: ${input:proj_name}:${input.name2}
+        - key: ${input.proj_name}
+          value: Public
   Cloud_NSX_Network_1:
     type: Cloud.NSX.Network
     properties:
-      networkType: private
-      networkCidr: ${input.cidr2}
+      networkType: routed
+      networkCidr: ${input.cidr}
       name: ${input.name}
       resourceName: ${input.name}
       tags:
-        - key: ${input:proj_name}:${input.name}
+        - key: ${input.proj_name}
+          value: Private
   Custom_Project_Create_1:
-    type: Custom.Project_Create
+    type: Custom.Project_Create_1
     properties:
       host: ${input.host}
       name: ${input.proj_name}
