@@ -1,0 +1,81 @@
+name: NPC_Windows_No_Tshirt
+version: 1.1
+formatVersion: 1
+inputs:
+  hostname:
+    type: string
+    title: User Defined Hostname
+    description: Hostname section of project-hostname-w/t###. Min 4, Max 10 characters
+    minLength: 4
+    maxLength: 10
+    pattern: "[a-zA-Z0-9!@#$%^&*]"
+  password:
+    type: string
+    title: Administrator Password
+    readOnly: false
+    encrypted: true
+    default: null
+  network:
+    type: string
+    title: Network Tag
+    default: Public
+    enum:
+      - Public
+      - Private
+  memory:
+    type: number
+    title: Memroy in MB
+  cpu:
+    type: number
+    title: vCPU Count
+  diskSize:
+    type: number
+    title: Disk Size in GB
+  image:
+    type: string
+    title: Image
+    default: windows-2019
+    enum:
+      - windows-2019
+      - windows-2022
+resources:
+  Cloud_vSphere_Disk_1:
+    type: Cloud.vSphere.Disk
+    properties:
+      capacityGb: ${input.diskSize}
+  Cloud_vSphere_Machine_1:
+    type: Cloud.vSphere.Machine
+    properties:
+      totalMemoryMB: ${input.memory}
+      cpuCount: ${input.cpu}
+      constraints:
+        - tag: Resource:${env.projectName}
+      name: ${input.hostname}
+      remoteAccess:
+        authentication: usernamePassword
+        username: Administrator
+        password: ${input.password}
+      image: ${input.image}
+      tags:
+        - key: CreatedBy
+          value: ${env.requestedBy}
+        - key: CreatedOn
+          value: ${env.requestedAt}
+        - key: Deployment
+          value: ${env.deploymentName}
+      networks:
+        - network: ${resource.Cloud_NSX_Network_1.id}
+      cloudConfig: |
+        #cloud-config
+        set_hostname: ${self.resourceName}
+        write_files:
+           content: Cloudbase-init test
+           path: C:\test.txt
+      attachedDisks:
+        - source: ${resource.Cloud_vSphere_Disk_1.id}
+  Cloud_NSX_Network_1:
+    type: Cloud.NSX.Network
+    properties:
+      networkType: existing
+      constraints:
+        - tag: ${env.projectName}:${input.network}
