@@ -1,5 +1,5 @@
 name: Linux_for_NPC
-version: 1.0
+version: 1
 formatVersion: 1
 inputs:
   hostname:
@@ -8,7 +8,7 @@ inputs:
     description: Hostname section of project-hostname-w/t###. Min 4, Max 10 character
     minLength: 4
     maxLength: 10
-    pattern: '[a-zA-Z0-9!@#$%^&*]'
+    pattern: "[a-zA-Z0-9!@#$%^&*]"
   accountName:
     type: string
     title: User Name
@@ -52,7 +52,7 @@ resources:
     type: Cloud.vSphere.Machine
     properties:
       constraints:
-        - tag: Resource:Dev_Pool
+        - tag: Resource:${env.projectName}
       name: ${input.hostname}
       image: ${input.image}
       flavor: ${input.flavor}
@@ -91,3 +91,4 @@ resources:
       networkType: existing
       constraints:
         - tag: ${env.projectName}:${input.network}
+
