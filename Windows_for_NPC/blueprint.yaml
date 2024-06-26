@@ -1,5 +1,5 @@
 name: Windows_for_NPC
-version: 1.2
+version: 1.3
 formatVersion: 1
 inputs:
   hostname:
