@@ -38,6 +38,17 @@ inputs:
   proj_name:
     type: string
     title: Project Name
+  resourcePool:
+    type: object
+    title: Parent Resource Pool
+    properties:
+      id:
+        type: string
+        title: Reference object identifier
+      type:
+        type: string
+        title: Reference object type
+    $data: vro/data/inventory/VC:ResourcePool
 resources:
   Cloud_NSX_Gateway_1:
     type: Cloud.NSX.Gateway
@@ -73,3 +84,8 @@ resources:
       host: ${input.host}
       name: ${input.proj_name}
       placementPolicy: DEFAULT
+  Custom_Resource_Pool_1:
+    type: Custom.Resource_Pool
+    properties:
+      name: ${input.proj_name}
+      resourcePool: ${input.resourcePool}
